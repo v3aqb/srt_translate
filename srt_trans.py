@@ -148,7 +148,7 @@ for fname in fnames:
 
     n = 10
     i = 0
-    while i <= len(job):
+    while i < len(job):
         semaphor.acquire()
         threading.Thread(target=do_translate, args=(job, result, i, semaphor)).start()
         # do_translate(job, result, i, semaphor)
