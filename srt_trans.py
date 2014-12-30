@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-#-*- coding: UTF-8 -*-
+# coding: UTF-8
 #
 # this program is designed to translate to chinese only.
 from __future__ import unicode_literals
@@ -8,7 +8,7 @@ import re
 import threading
 import logging
 logging.basicConfig(level=logging.INFO)
-import re
+
 import json
 from textwrap import wrap
 try:
@@ -20,25 +20,24 @@ except:
 
 
 class Translator:
-# ----------------------------------------------------------------------------
-# "THE BEER-WARE LICENSE" (Revision 42):
-# <terry.yinzhe@gmail.com> wrote this file. As long as you retain this notice you
-# can do whatever you want with this stuff. If we meet some day, and you think
-# this stuff is worth it, you can buy me a beer in return to Terry Yin.
-#
-# The idea of this is borrowed from <mort.yao@gmail.com>'s brilliant work
-#    https://github.com/soimort/google-translate-cli
-# He uses "THE BEER-WARE LICENSE". That's why I use it too. So you can buy him a
-# beer too.
-# ----------------------------------------------------------------------------
+    # ----------------------------------------------------------------------------
+    # "THE BEER-WARE LICENSE" (Revision 42):
+    # <terry.yinzhe@gmail.com> wrote this file. As long as you retain this notice you
+    # can do whatever you want with this stuff. If we meet some day, and you think
+    # this stuff is worth it, you can buy me a beer in return to Terry Yin.
+    #
+    # The idea of this is borrowed from <mort.yao@gmail.com>'s brilliant work
+    #    https://github.com/soimort/google-translate-cli
+    # He uses "THE BEER-WARE LICENSE". That's why I use it too. So you can buy him a
+    # beer too.
+    # ----------------------------------------------------------------------------
     string_pattern = r"\"(([^\"\\]|\\.)*)\""
-    match_string =re.compile(
-                        r"\,?\["
-                           + string_pattern + r"\,"
-                           + string_pattern + r"\,"
-                           + string_pattern + r"\,"
-                           + string_pattern
-                        +r"\]")
+    match_string = re.compile(r"\,?\["
+                              + string_pattern + r"\,"
+                              + string_pattern + r"\,"
+                              + string_pattern + r"\,"
+                              + string_pattern
+                              + r"\]")
 
     def __init__(self, to_lang, from_lang='auto'):
         self.from_lang = from_lang
@@ -67,9 +66,8 @@ class Translator:
         escaped_source = quote(source.encode('UTF-8'), '')
         headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_6_8) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.168 Safari/535.19'}
         req = request.Request(
-             url="http://translate.google.cn/translate_a/t?client=t&ie=UTF-8&oe=UTF-8"
-                 +"&sl=%s&tl=%s&text=%s" % (self.from_lang, self.to_lang, escaped_source)
-                 , headers = headers)
+            url="http://translate.google.cn/translate_a/t?client=t&ie=UTF-8&oe=UTF-8&sl=%s&tl=%s&text=%s" % (self.from_lang, self.to_lang, escaped_source),
+            headers=headers)
         r = request.urlopen(req)
         return r.read().decode('utf-8')
 
@@ -103,10 +101,8 @@ for fname in fnames:
             break
         try:
             line = line.replace(b'\xef\xbb\xbf', b'').decode('cp1252')
-            co = 'cp1252'
         except:
             line = line.replace(b'\xef\xbb\xbf', b'').decode('UTF-8')
-            co = 'UTF-8'
         if not line.strip():
             output.append('\r\n')
         elif line.strip().isdigit():
@@ -117,7 +113,10 @@ for fname in fnames:
             script = re.sub(r'<[^<]+>', '', line.strip())
             append = ''
             while not script.endswith(('.', '?', ')', '=', ':')):
-                line = ifile.readline().decode(co)
+                try:
+                    line = ifile.readline().decode('cp1252')
+                except:
+                    line = ifile.readline().decode('UTF-8')
                 if not line:
                     break
                 if not line.strip():
@@ -139,7 +138,6 @@ for fname in fnames:
 
     n_of_t = 10
     semaphor = threading.Semaphore(n_of_t)
-
 
     def do_translate(job, result, index, semaphor):
         logging.info('translating %s - %s' % (index, index + n))
