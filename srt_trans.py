@@ -88,7 +88,7 @@ else:
 for fname in fnames:
     logging.info('translating %s' % fname)
     fsplit = fname.split('.')
-    fsplit[-2] = 'chn'
+    fsplit[-2] = fsplit[-2] + '.chn'
     oname = '.'.join(fsplit)
 
     ifile = open(fname, 'rb')
