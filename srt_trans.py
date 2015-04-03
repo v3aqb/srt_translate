@@ -63,12 +63,12 @@ class Translator:
         return result
 
     def _get_json5_from_google(self, source):
-        escaped_source = quote(source.encode('UTF-8'), '')
+        escaped_source = quote(source.encode('UTF-8'), b'')
         headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_6_8) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.168 Safari/535.19'}
         req = request.Request(
             url="http://translate.google.cn/translate_a/t?client=t&ie=UTF-8&oe=UTF-8&sl=%s&tl=%s&text=%s" % (self.from_lang, self.to_lang, escaped_source),
             headers=headers)
-        r = request.urlopen(req)
+        r = request.urlopen(req, timeout=3)
         return r.read().decode('utf-8')
 
     def _unescape(self, text):
